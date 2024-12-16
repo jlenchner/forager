@@ -4,11 +4,11 @@ import numpy as np
 
 class SmartNode:
     UNDEFINED = -999
-    SLOTS = 8 #this is the number that determines m/l; should be a power of 2
+    SLOTS = 4 #this is the number that determines m/l; should be a power of 2
     ALPHA = UNDEFINED
     G = None  #the graph
-    n = 20 #default number of nodes
-    k = 100  # number of states
+    n = 20 #default #number of nodes
+    k = 100  #number of states
     l = k + math.ceil(math.log2(math.log2(n)))
     m = SLOTS * l  # to make m/l a power of two and a reasonable
 
@@ -52,7 +52,8 @@ class SmartNode:
                 return 0
             z_inv += pow(2, -self._w[i])
 
-        return 1.0/z_inv
+        self._Z = 1.0/z_inv
+        return self._Z
 
     @classmethod
     def ComputeAlpha(cls):
@@ -72,7 +73,9 @@ class SmartNode:
             self.computeZ()
         if SmartNode.ALPHA == SmartNode.UNDEFINED:
             SmartNode.ComputeAlpha()
-        return SmartNode.ALPHA*SmartNode.SLOTS*SmartNode.SLOTS*self._Z
+
+        self._E = SmartNode.ALPHA*SmartNode.SLOTS*SmartNode.SLOTS*self._Z
+        return self._E
 
     @classmethod
     def GetSmartNode(cls, node):
