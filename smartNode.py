@@ -7,7 +7,7 @@ class SmartNode:
     SLOTS = 8 #this is the number that determines m/l; should be a power of 2
     ALPHA = UNDEFINED
     G = None  #the graph
-    n = 20 #default number
+    n = 20 #default number of nodes
     k = 100  # number of states
     l = k + math.ceil(math.log2(math.log2(n)))
     m = SLOTS * l  # to make m/l a power of two and a reasonable
