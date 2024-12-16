@@ -15,11 +15,11 @@ def PrintAllNodeInfo(G):
 n = 20 #number of nodes
 SmartNode.SetNumberOfNodes(numNodes=n)
 p = 0.25 #E-R edge prob
-R = 10 #Number of w-swappiong rounds
-xR = 10 #Number of E-swapping rounds
+R = 3 #Number of w-swappiong rounds
+xR = 5 #Number of E-swapping rounds
 
 # Generate a random graph (Erdős-Rényi model)
-G = nx.gnp_random_graph(n, 0.25)
+G = nx.gnp_random_graph(n, 0.35)
 SmartNode.SetGraph(graph=G)
 PROB_HAS_FOOD = 0.5
 # Draw the graph
@@ -59,6 +59,9 @@ for i in range(R):
 for node in G.nodes:
     smartNode = G.nodes._nodes.get(node)
     smartNode.computeE()
+
+print("\nAfter local computation of E: ")
+PrintAllNodeInfo(G)
 
 #Complete E-swapping rounds
 for i in range(xR):
