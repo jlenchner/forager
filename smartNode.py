@@ -4,12 +4,13 @@ import numpy as np
 
 class SmartNode:
     UNDEFINED = -999
-    SLOTS = 4 #this is the number that determines m/l; should be a power of 2
+    SLOTS = 1024 #this is the number that determines m/l; should be a power of 2
     ALPHA = UNDEFINED
     G = None  #the graph
-    n = 20 #default #number of nodes
-    k = 100  #number of states
+    n = 20 #default #number of nodes; should always get over-written
+    k = 7  #number of states
     l = k + math.ceil(math.log2(math.log2(n)))
+    #l = 6 #For consistency with Markus
     m = SLOTS * l  # to make m/l a power of two and a reasonable
 
     def __init__(self, id, hasFood=False, neighborSet={}):
@@ -32,12 +33,14 @@ class SmartNode:
         self._hasMostFoodInRadiusR = True
 
     def __str__(self):
+        bad_w_count = self._w.count(SmartNode.UNDEFINED)
         s = "Node id: " + str(self._id) + \
             ", hasFood: " + str(self._hasFood) + \
             ", neighborSet: " + str(self._neighborSet) + \
             ", w: " + str(self._w ) + \
             ", E: " + str(self._E) + \
-            ", _hasMostFoodInRadiusR: " + str(self._hasMostFoodInRadiusR)
+            ", _hasMostFoodInRadiusR: " + str(self._hasMostFoodInRadiusR) + \
+            ", bad_w_count: " + str(bad_w_count)
 
         return s
 
@@ -57,8 +60,8 @@ class SmartNode:
 
     @classmethod
     def ComputeAlpha(cls):
-        STEP_SIZE = 0.01
-        INFINITY = 100
+        STEP_SIZE = 0.0001  #this and the next were derived experimentally to guarantee near convergence
+        INFINITY = 1000
         num_integral = 0
         u = 0
         while u < INFINITY:
@@ -111,6 +114,12 @@ class SmartNode:
             if self._pulledEs[i] > self._E:
                 self._E = self._pulledEs[i]
                 self._hasMostFoodInRadiusR = False
+
+
+
+
+
+
 
 
 
