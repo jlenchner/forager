@@ -4,14 +4,14 @@ import numpy as np
 
 class SmartNode:
     UNDEFINED = -999
-    SLOTS = 1024 #this is the number that determines m/l; should be a power of 2
+    SLOTS = 4 #this is the number that determines m/l; should be a power of 2
     ALPHA = UNDEFINED
     G = None  #the graph
-    n = 20 #default #number of nodes; should always get over-written
+    n = 16 #default #number of nodes; should always get over-written
     k = 7  #number of states
     l = k + math.ceil(math.log2(math.log2(n)))
     #l = 6 #For consistency with Markus
-    m = SLOTS * l  # to make m/l a power of two and a reasonable
+    m = SLOTS * l  # to make m/l a power of two and a reasonable value
 
     def __init__(self, id, hasFood=False, neighborSet={}):
         self._id = id
@@ -52,11 +52,33 @@ class SmartNode:
         z_inv = 0
         for i in range(SmartNode.SLOTS):
             if self._w[i] == SmartNode.UNDEFINED:
+                #continue  #experimental
+                self._Z = 0
                 return 0
             z_inv += pow(2, -self._w[i])
 
         self._Z = 1.0/z_inv
         return self._Z
+
+    def getSmartNodesWithinGivenDistance(self, d):
+        smartNbhood = {self}
+        for i in range(d):
+            nbhood = set()
+            for node in smartNbhood:
+                nbhood = nbhood | node._neighborSet
+            for node in nbhood:
+                smartNbhood.add(SmartNode.GetSmartNode(node))
+
+        return smartNbhood
+
+    def getFoodAmountWithinGivenDistance(self, d):
+        distanceDNodes = self.getSmartNodesWithinGivenDistance(d)
+        amountOfFood = 0
+        for node in distanceDNodes:
+            if node._hasFood:
+                amountOfFood += 1
+
+        return amountOfFood
 
     @classmethod
     def ComputeAlpha(cls):
@@ -69,6 +91,7 @@ class SmartNode:
             u += STEP_SIZE
 
         cls.ALPHA = 1.0/(cls.SLOTS * num_integral)
+        #print("ALPHA = " + str(round(cls.ALPHA, 3)))
         return cls.ALPHA
 
     def computeE(self):
@@ -114,12 +137,6 @@ class SmartNode:
             if self._pulledEs[i] > self._E:
                 self._E = self._pulledEs[i]
                 self._hasMostFoodInRadiusR = False
-
-
-
-
-
-
 
 
 
