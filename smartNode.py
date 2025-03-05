@@ -95,6 +95,9 @@ class SmartNode:
         return cls.ALPHA
 
     def computeE(self):
+        if SmartNode.UNDEFINED in self._w:
+            self._E = SmartNode.SLOTS * math.log2(SmartNode.SLOTS/self._w.count(SmartNode.UNDEFINED))
+            return self._E
         if self._Z == SmartNode.UNDEFINED:
             self.computeZ()
         if SmartNode.ALPHA == SmartNode.UNDEFINED:
@@ -115,7 +118,7 @@ class SmartNode:
         self._pulledWs = []
         for nbr_node in self._neighborSet:
             smartNbr = SmartNode.GetSmartNode(nbr_node)
-            self._pulledWs.append(smartNbr._w)
+            self._pulledWs.append(smartNbr._w.copy())
 
     def mergeWVecs(self):
         for pulledW in self._pulledWs:

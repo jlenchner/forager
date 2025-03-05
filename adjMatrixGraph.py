@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import random
 from smartNode import SmartNode
 from adjMatrix import AdjMatrix
+random.seed(4)
 
 def GetNeighbors(G, node):
     return set(G.adj._atlas.get(node).keys())
@@ -69,7 +70,6 @@ def RunMultipleSims(num_sims):
         cumAbsError = 0
         cumRelError = 0
         cumFood = 0
-        rel_n = 0
         for node in G.nodes:
             smartNode = G.nodes._nodes.get(node)
             E = smartNode.computeE()
@@ -79,15 +79,12 @@ def RunMultipleSims(num_sims):
             cumAbsError += abs(E - F)
             if F != 0:
                 cumRelError += (abs(E - F)/F)
-                rel_n += 1
-            elif E - F == 0:
-                rel_n += 1
             cumFood += F
         RMSE = pow(cumSquareError / n, 0.5)
         cum_RMSE += RMSE
         MAE = cumAbsError / n
         cum_MAE += MAE
-        MRE = cumRelError / rel_n
+        MRE = cumRelError / n
         cum_MRE += MRE
         AveFood = cumFood / n
         cum_AveFood += AveFood
